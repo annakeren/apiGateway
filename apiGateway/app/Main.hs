@@ -22,6 +22,10 @@ app :: SpockM () MySession MyAppState ()
 app =
     do get root $
            text "Hello World!"
+       get "products" $
+            text "routing to products"
+       get "account" $
+             text "routing to account"
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState
               visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)
