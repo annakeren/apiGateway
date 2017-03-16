@@ -25,7 +25,7 @@ app =
        get "products" $
             text "routing to products"
        get "account" $
-             text "routing to account"
+            redirect "http://localhost:8081"
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState
               visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)

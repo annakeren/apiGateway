@@ -12,6 +12,13 @@ import qualified Data.Text as T
 data MySession = EmptySession
 data MyAppState = DummyAppState (IORef Int)
 
+
+data Envelope = Envelope { envId :: Int, envData :: Value } deriving Show
+
+instance ToJSON Envelope where
+   toJSON (Envelope envA envB) = object [ "id" .= envA, "data" .= envB ]
+
+
 main :: IO ()
 main =
     do ref <- newIORef 0
