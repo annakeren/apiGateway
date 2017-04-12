@@ -8,15 +8,10 @@ import Control.Monad.Trans
 import Data.Monoid
 import Data.IORef
 import qualified Data.Text as T
+import JSON
 
 data MySession = EmptySession
 data MyAppState = DummyAppState (IORef Int)
-
-
-data Envelope = Envelope { envId :: Int, envData :: Value } deriving Show
-
-instance ToJSON Envelope where
-   toJSON (Envelope envA envB) = object [ "id" .= envA, "data" .= envB ]
 
 
 main :: IO ()
@@ -28,7 +23,7 @@ main =
 app :: SpockM () MySession MyAppState ()
 app =
     do get root $
-           text "Hello accounts!"
+           text "Account:Anna"
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState
               visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)
