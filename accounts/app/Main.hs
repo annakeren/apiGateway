@@ -25,8 +25,7 @@ main =
 app :: SpockM () MySession MyAppState ()
 app =
     do get root $
---           text "Account:Anna"
-           text (T.pack (renderJValue (JString "Account:Anna")))
+            text (T.pack (renderJValue (JObject [("Account", JNumber 1), ("Open", JBool True)])))
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState
               visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)
