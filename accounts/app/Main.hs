@@ -8,6 +8,8 @@ import Control.Monad.Trans
 import Data.Monoid
 import Data.IORef
 import qualified Data.Text as T
+import Data.String
+import PutJSON
 import JSON
 
 data MySession = EmptySession
@@ -23,7 +25,8 @@ main =
 app :: SpockM () MySession MyAppState ()
 app =
     do get root $
-           text "Account:Anna"
+--           text "Account:Anna"
+           text (T.pack (renderJValue (JString "Account:Anna")))
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState
               visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)
