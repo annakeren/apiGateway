@@ -25,7 +25,6 @@ app =
        get "products" $
             text "routing to products"
        get "account" $
-
             redirect "http://localhost:8081"
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState

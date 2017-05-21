@@ -29,4 +29,4 @@ app =
        get ("hello" <//> var) $ \name ->
            do (DummyAppState ref) <- getState
               visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)
-              text ("Hello " <> name <> ", you are visitor number " <> T.pack (show visitorNumber))
+              text (T.pack (renderJValue (JObject [("Hello", JString name), ("you are visitor number", JInt visitorNumber)])))

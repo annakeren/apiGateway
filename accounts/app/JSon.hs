@@ -11,6 +11,7 @@ module JSON
     ) where
 data JValue = JString String
             | JNumber Double
+            | JInt Int
             | JBool Bool
             | JNull
             | JObject [(String, JValue)]
@@ -22,7 +23,7 @@ getString (JString s) = Just s
 getString _           = Nothing
 
 getInt :: JValue -> Maybe Int
-getInt (JNumber n) = Just (truncate n)
+getInt (JInt n) = Just n
 getInt _           = Nothing
 
 getDouble :: JValue -> Maybe Double
