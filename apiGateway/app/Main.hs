@@ -1,32 +1,46 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Main where
 
 import Web.Spock
 import Web.Spock.Config
-
-import Control.Monad.Trans
-import Data.Monoid
+import Data.Aeson  hiding (json)
+import Data.Monoid ((<>))
+import Data.Text  (Text, pack)
+import GHC.Generics
 import Data.IORef
-import qualified Data.Text as T
 
-data MySession = EmptySession
-data MyAppState = DummyAppState (IORef Int)
+data Account = Account
+  { email :: Text
+  , password  :: Text
+  } deriving (Generic, Show)
+instance ToJSON Account
+instance FromJSON Account
+
+data Product = Product
+  { name :: Text
+  , price  :: Int
+  } deriving (Generic, Show)
+instance ToJSON Product
+instance FromJSON Product
+
+type Api = SpockM () () () ()
+type ApiAction a = SpockAction () () () a
 
 main :: IO ()
 main =
-    do ref <- newIORef 0
-       spockCfg <- defaultSpockCfg EmptySession PCNoDatabase (DummyAppState ref)
-       runSpock 8080 (spock spockCfg app)
+    do
+        spockCfg <- defaultSpockCfg () PCNoDatabase ()
+        runSpock 8080 (spock spockCfg app)
 
-app :: SpockM () MySession MyAppState ()
+app :: Api
 app =
     do get root $
            text "Hello World!"
-       get "products" $
-            text "routing to products"
+       get "products" $ do
+            json $ Product { name = "chocolate", price = 2 }
        get "account" $
             redirect "http://localhost:8081"
-       get ("hello" <//> var) $ \name ->
-           do (DummyAppState ref) <- getState
-              visitorNumber <- liftIO $ atomicModifyIORef' ref $ \i -> (i+1, i+1)
-              text ("Hello " <> name <> ", you are visitor number " <> T.pack (show visitorNumber))
+       post "account/open" $ do
+            theAccount <- jsonBody' :: ApiAction Account
+            text $ "Parsed: " <> pack (show theAccount)
