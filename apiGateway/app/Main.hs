@@ -5,6 +5,7 @@ module Main where
 import Web.Spock
 import Web.Spock.Config
 import Data.Aeson  hiding (json)
+import qualified Data.Text as T
 import Data.Monoid ((<>))
 import Data.Text  (Text, pack)
 import GHC.Generics
@@ -42,5 +43,7 @@ app =
        get "account" $
             redirect "http://localhost:8081"
        post "account/open" $ do
-            theAccount <- jsonBody' :: ApiAction Account
-            text $ "Parsed: " <> pack (show theAccount)
+            str <- redirect ("http:localhost:8081/account/open")
+            text str
+--            theAccount <- jsonBody' :: ApiAction Account
+--            text $ "Parsed: " <> pack (show theAccount)
